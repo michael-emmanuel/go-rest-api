@@ -1,2 +1,3 @@
 # go-rest-api
-A simple REST API written in Go
+
+An Event Booking REST API written in Go
