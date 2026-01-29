@@ -1,7 +1,7 @@
 # go-rest-api
 
-A **simple REST API written in Go (Gin framework)** for managing events, users, and registrations.
-This project demonstrates basic CRUD operations, database connectivity, and structured routes.
+An **Event Booking REST API written in Go (Gin framework)** for managing events, users, and registrations.
+This project demonstrates basic CRUD operations, database connectivity, authentication and structured routes.
 
 ---
 
@@ -56,7 +56,7 @@ cd go-rest-api
 - `models/`: Database models and related logic
 - `routes/`: API route handlers
 - `db/`: Database connection and setup
-- `utils/`: Helpers (e.g., password hashing)
+- `utils/`: Helpers (e.g., password hashing, jwt)
 - `main.go`: Entry point that starts the server
 
 ---
@@ -98,54 +98,35 @@ http://localhost:8080
 
 ---
 
-### 👤 **Users** (depends on your models)
+### 👤 **Users**
 
-| Method | Endpoint       | Description       |
-| ------ | -------------- | ----------------- |
-| POST   | `/users/login` | Authenticate user |
-| POST   | `/users`       | Create new user   |
+| Method | Endpoint  | Description       |
+| ------ | --------- | ----------------- |
+| POST   | `/login`  | Authenticate user |
+| POST   | `/signup` | Create new user   |
 
 ---
 
 ### 📅 **Registrations**
 
-| Method | Endpoint             | Description                 |
-| ------ | -------------------- | --------------------------- |
-| POST   | `/registrations`     | Register a user to an event |
-| GET    | `/registrations`     | List registrations          |
-| GET    | `/registrations/:id` | Get a specific registration |
+| Method | Endpoint               | Description                 |
+| ------ | ---------------------- | --------------------------- |
+| POST   | `/events/:id/register` | Register a user to an event |
+| DELETE | `/events/:id/register` | cancel a registration       |
 
 ---
 
 ## 🛠 Example REST Client Requests
 
-### Create Event
+### User SignUp
 
 ```
-POST http://localhost:8080/events
+POST http://localhost:8080/signup
 Content-Type: application/json
 
 {
-  "name": "Test Event",
-  "description": "This is a test event",
-  "location": "Somewhere",
-  "dateTime": "2025-01-01T15:30:00Z"
-}
-```
-
----
-
-### Update Event
-
-```
-PUT http://localhost:8080/events/1
-Content-Type: application/json
-
-{
-  "name": "Updated test event",
-  "description": "Updated test event",
-  "location": "Test location (updated)",
-  "dateTime": "2025-01-01T15:30:00Z"
+  "email": "test@example.com",
+  "password": "password123"
 }
 ```
 
@@ -165,6 +146,42 @@ Content-Type: application/json
 
 ---
 
+### Create Event
+
+```
+POST http://localhost:8080/events
+Content-Type: application/json
+authorization: <token returned by the login endpoint>
+
+{
+  "name": "Test Event",
+  "description": "This is a test event",
+  "location": "Somewhere",
+  "dateTime": "2025-01-01T15:30:00Z"
+}
+```
+
+---
+
+### Update Event
+
+```
+PUT http://localhost:8080/events/1
+Content-Type: application/json
+authorization: <token returned by the login endpoint>
+
+{
+  "name": "Updated test event",
+  "description": "Updated test event",
+  "location": "Test location (updated)",
+  "dateTime": "2025-01-01T15:30:00Z"
+}
+```
+
+_View `/api-test` folder for more route examples_
+
+---
+
 ## 📌 Notes
 
 - This repo uses **Gin** as the HTTP server and router.
@@ -173,7 +190,7 @@ Content-Type: application/json
 
 ---
 
-## 📈 Next Improvements (Optional)
+## 📈 Next Improvements
 
 - Add migrations (instead of raw table creation)
 - Add tests & CI
